@@ -36,7 +36,7 @@ router.post("/request-otp", async(req,res)=>{
     })
     const mailOption = {
         from:"caleboruta.co@gmail.com",
-        to:"orutacaleb20@gmail.com",
+        to:email,
         subject:"Email OTP",
         // text:"New Email"
         html: `
