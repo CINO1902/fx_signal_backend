@@ -3,6 +3,8 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const {createTokens} = require('../jwt/middleware')
 const register = require('../model/register')
+
+
 router.route("/login").post(async (req,res)=>{
   const { email, password } = req.body;
   let emailuse = email.toLowerCase().trim();
@@ -28,6 +30,7 @@ router.route("/login").post(async (req,res)=>{
           userData.phoneNumber = user.phone_number;
           userData.tradingExperience = user.trading_experience;
           userData.verified = user.email_verify;
+          userData.completeprofile = user.completed_profile;
           
 
           const accessToken = createTokens(emailuse)

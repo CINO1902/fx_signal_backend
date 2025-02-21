@@ -22,6 +22,7 @@ router.route('/createaccount').post(async (req,res)=>{
              lastname:lastname,
              email: emailuse, 
              email_verify:false,
+             completed_profile:false,
              image_url:"",
              allownotification:false,
              trading_experience:"Beginner",

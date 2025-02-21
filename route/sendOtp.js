@@ -146,6 +146,7 @@ router.post("/complete-profile", async(req,res)=>{
         await register.updateOne({email:emailuse},
             {$set: {
             image_url:imageUrl, 
+            completed_profile:true,
             trading_experience:tradeExperience,
             allownotification:allownotification
         }},

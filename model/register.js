@@ -15,6 +15,9 @@ const registered = Schema({
     email_verify:{
         type: Boolean
     },
+    completed_profile:{
+        type: Boolean
+    },
     password:{
         type:String
     },
