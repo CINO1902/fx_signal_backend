@@ -24,6 +24,9 @@ const registered = Schema({
     trading_experience:{
         type:String
     },
+    fcmToken:{
+        type:String
+    },
     image_url:{
         type:String
     },

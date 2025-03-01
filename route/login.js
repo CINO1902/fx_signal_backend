@@ -6,7 +6,7 @@ const register = require('../model/register')
 
 
 router.route("/login").post(async (req,res)=>{
-  const { email, password } = req.body;
+  const { email, password , fcmtoken} = req.body;
   let emailuse = email.toLowerCase().trim();
 
   const user = await register.findOne({ email: emailuse});
@@ -32,8 +32,18 @@ router.route("/login").post(async (req,res)=>{
           userData.verified = user.email_verify;
           userData.completeprofile = user.completed_profile;
           
-
+          if (fcmtoken) {
+            try {
+              await register.findOneAndUpdate(
+                { email: emailuse },
+                { fcmToken: fcmtoken }
+              );
+            } catch (updateError) {
+              console.error("Error updating fcmToken:", updateError);
+            }
+          }
           const accessToken = createTokens(emailuse)
+        
          return res.status(200).json({token:accessToken, msg:"Successfully Logged In", success:'true', user:userData});
         }
       }).catch((e)=>{

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const signals = require('../model/createSignal')
 const copyModel = require("../model/copyModel");
+const sendFCMNotification = require('../route/notification')
 var request = require('request');
 const crypto = require("crypto");
 
@@ -25,6 +26,7 @@ router.route('/createSignal').post(async (req,res)=>{
           while (await signals.findOne({ where: { id: signal_id } })) {
             signal_id = generateRandomID();
           }
+          sendNotificationToAllUsers('New Signal!!!', `There is a potential ${order} order on ${signal_name} click to see more details`);
            await signals.create({
             id: signal_id,
             signal_name:signal_name,
@@ -97,7 +99,8 @@ router.route('/createSignal').post(async (req,res)=>{
 
 
    router.route('/updateSignalAdmin').post(async (req, res) => {
-    const { entries, active, signalId , final_price} = req.body;
+    const { entries, active, signalId , final_price, pair, order, stop_loss, take_profit} = req.body;
+    console.log(pair)
 
     try {
       let date = new Date();
@@ -120,6 +123,19 @@ router.route('/createSignal').post(async (req,res)=>{
         }
         if (final_price !== null && final_price !== undefined) {
           updateData.final_price = final_price;
+      }
+      if (pair !== null && pair !== undefined) {
+        updateData.signal_name = pair;
+    }
+    if (order !== null && order !== undefined) {
+      updateData.order = order;
+   }
+  if (stop_loss !== null && stop_loss !== undefined) {
+    updateData.stop_loss = stop_loss;
+    }
+    if (take_profit !== null && take_profit !== undefined) {
+      updateData.take_profit
+       = take_profit;
       }
 
         if (Object.keys(updateData).length > 0) {
