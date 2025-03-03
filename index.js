@@ -3,6 +3,7 @@ const http = require("http");
 const port = process.env.PORT || 3000;
 const mongoose = require("mongoose");
 const router = require("./route/register");
+const admin = require('firebase-admin');
 const login = require("./route/login");
 const emailOTP = require("./route/sendOtp");
 const createSignal = require("./route/createSignal");
@@ -16,6 +17,7 @@ const cors = require('cors');
 const app = express();
 
 // socketHandler.init(server);
+
 
 // require("./route/getPrices")(server);
 require('dotenv').config();

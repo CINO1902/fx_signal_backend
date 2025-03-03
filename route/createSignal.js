@@ -2,7 +2,10 @@ const express = require("express");
 const router = express.Router();
 const signals = require('../model/createSignal')
 const copyModel = require("../model/copyModel");
+const notificationModel = require("../model/notification");
+const userNotificationModel = require("../model/personalNotification");
 const sendFCMNotification = require('../route/notification')
+const sendNotificationToAllUsers = require('../route/notification2')
 var request = require('request');
 const crypto = require("crypto");
 
@@ -26,7 +29,31 @@ router.route('/createSignal').post(async (req,res)=>{
           while (await signals.findOne({ where: { id: signal_id } })) {
             signal_id = generateRandomID();
           }
-          sendNotificationToAllUsers('New Signal!!!', `There is a potential ${order} order on ${signal_name} click to see more details`);
+          await notificationModel.create({
+            id: signal_id,
+            signal_name:signal_name,
+               signal_type: signal_type, 
+               stop_loss:stop_loss,
+               entry:entry,
+               order:order,
+               active:true,
+               take_profit:take_profit,
+               access_type:access_type,
+               date_created:date    
+           })
+          // sendNotificationToAllUsers('New Signal!!!', `There is a potential ${order} order on ${signal_name} click to see more details`);
+          const message = {
+            topic: 'allUsers',
+            notification: {
+              title: 'New Signal!!!',
+              body: 'There is a potential ${order} order on ${signal_name} click to see more details'
+            }
+          };
+          
+          admin.messaging().send(message)
+            .then(response => console.log('Successfully sent message:', response))
+            .catch(error => console.error('Error sending message:', error));
+          
            await signals.create({
             id: signal_id,
             signal_name:signal_name,

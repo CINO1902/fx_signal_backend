@@ -2,20 +2,17 @@ const mongoose = require("mongoose")
 
 const Schema = mongoose.Schema
 
-const notification = Schema({
+const personalNotification = Schema({
     id:{
-        type:String
-    },
-    signal_id:{
         type:String
     },
     title:{
         type:String
     },
-    body:{
-        type:String
+    user_id:{
+         type:String
     },
-    payload:{
+    body:{
         type:String
     },
     date:{
@@ -23,4 +20,4 @@ const notification = Schema({
     }
 })
 
-module.exports = mongoose.model('notification', notification);
+module.exports = mongoose.model('personalNotification', personalNotification);

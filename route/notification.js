@@ -4,9 +4,9 @@ require('dotenv').config();
 // Initialize the Firebase app with your service account credentials
 
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount)
+// });
 
 /**
  * Sends an FCM notification to a given device token.

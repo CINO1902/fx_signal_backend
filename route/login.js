@@ -42,6 +42,9 @@ router.route("/login").post(async (req,res)=>{
               console.error("Error updating fcmToken:", updateError);
             }
           }
+          admin.messaging().subscribeToTopic([fcmtoken], "allUsers")
+  .then(response => console.log("Successfully subscribed:", response))
+  .catch(error => console.error("Subscription error:", error));
           const accessToken = createTokens(emailuse)
         
          return res.status(200).json({token:accessToken, msg:"Successfully Logged In", success:'true', user:userData});
@@ -51,6 +54,33 @@ router.route("/login").post(async (req,res)=>{
           return res.status(500).json({success:'fail', msg:'Something went wrong'})
       });
 }
+});
+
+
+
+router.route("/logout").post(async (req,res)=>{
+  const { email , fcmtoken} = req.body;
+  let emailuse = email.toLowerCase().trim();
+try{
+  const user = await register.findOne({ email: emailuse});
+  console.log(user)
+
+  if (!user) {
+     return res.status(500).json({success:'false', msg: "Wrong Username and Password Combination!" })
+}else{
+  
+  admin.messaging().unsubscribeFromTopic([fcmtoken], "allUsers")
+  .then(response => console.log("Successfully unsubscribed:", response))
+  .catch(error => console.error("Unsubscription error:", error));
+        
+         return res.status(200).json({msg:"Successfully Logged Out", success:'true',});
+        }
+}catch(e){
+  return res.status(500).json({msg:"Something Went Wrong", success:'true',});
+}
+ 
+    
+
 });
 
 
