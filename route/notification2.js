@@ -1,10 +1,8 @@
-const admin = require('firebase-admin');
+const admin = require('../firebaseAdmin')
 const Register = require('../model/register'); // Your Mongoose model
 
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
+
 
 
 function chunkArray(arr, size) {

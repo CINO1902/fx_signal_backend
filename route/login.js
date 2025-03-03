@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const {createTokens} = require('../jwt/middleware')
 const register = require('../model/register')
+const admin = require('../firebaseAdmin')
 
 
 router.route("/login").post(async (req,res)=>{
