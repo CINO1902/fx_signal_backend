@@ -15,6 +15,9 @@ const personalNotification = Schema({
     body:{
         type:String
     },
+    payload:{
+        type:String
+    }, 
     date:{
         type:Date
     }

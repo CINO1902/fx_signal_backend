@@ -162,4 +162,26 @@ router.post("/complete-profile", async(req,res)=>{
     }
 })
 
+
+router.route('/updateProfilePicture').post(async (req,res)=>{
+    const{email, imageUrl} = req.body
+    try {
+      let getdocument = await register.findOne({email:email});
+      if (!getdocument) {
+        return res.status(404).json({status:'fail', message:"Profile does not exist"})
+      } else {
+        await register.updateOne({email:email},
+            {$set: {
+            image_url:imageUrl, 
+        }},
+            {upsert:true})   
+        res.status(200).json({ status: "success", msg: "Successful" });
+      }
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ status: "fail", msg: "Something went wrong" });
+    }
+
+})
+
 module.exports = router

@@ -47,4 +47,21 @@ router.route('/createaccount').post(async (req,res)=>{
      }
 })
 
+router.route('/deleteAccount').post(async (req,res)=>{
+  const{email} = req.body
+  try {
+    let getdocument = await register.findOne({email:email});
+    if (!getdocument) {
+      return res.status(404).json({status:'fail', message:"Profile does not exist"})
+    } else {
+      // await register.deleteMany({email:email})
+      res.status(200).json({ status: "success", msg: "Successful"});
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ status: "fail", msg: "Something went wrong" });
+  }
+
+})
+
 module.exports = router

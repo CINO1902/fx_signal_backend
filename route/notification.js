@@ -1,3 +1,8 @@
+const express = require("express");
+const router = express.Router();
+const notification = require("../model/notification");
+const personalNotification = require("../model/personalNotification");
+
 const admin = require('firebase-admin');
 require('dotenv').config();
 
@@ -37,10 +42,46 @@ async function sendFCMNotification(deviceToken, title, body) {
 }
 
 
+router.route('/getNotification').get(async (req, res) => {
+  const { userId } = req.query;
+  try {
+    let notifications = await notification.find();
+    let personalNotifications = await personalNotification.find({ user_id: userId });
+    
+    const combinedNotifications = [...notifications, ...personalNotifications];
+    
+    if (combinedNotifications.length === 0) {
+      return res.status(404).json({ 
+        status: "empty", 
+        msg: "No notifications found", 
+        notifications: [] 
+      });
+    }
+    
+    const sortedNotifications = combinedNotifications.sort(
+      (a, b) => new Date(b.date) - new Date(a.date)
+    );
+    
+    res.status(200).json({ 
+      status: "success", 
+      msg: "Successful", 
+      notifications: sortedNotifications 
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ 
+      status: "fail", 
+      msg: "Something went wrong" 
+    });
+  }
+});
 
 
 
-module.exports = sendFCMNotification
+
+// module.exports = sendFCMNotification
+
+module.exports = router
 
 // Example usage:
 const userDeviceToken = 'YOUR_USER_DEVICE_TOKEN';

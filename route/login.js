@@ -10,7 +10,7 @@ router.route("/login").post(async (req,res)=>{
   const { email, password , fcmtoken} = req.body;
   let emailuse = email.toLowerCase().trim();
 
-  const user = await register.findOne({ email: emailuse});
+  let user = await register.findOne({ email: emailuse});
   console.log(user)
 
   if (!user) {
@@ -26,6 +26,7 @@ router.route("/login").post(async (req,res)=>{
           const userData = {};
           userData.firstname = user.firstname;
           userData.lastname = user.lastname;
+          userData.userId = user._id;
           userData.email = user.email;
           userData.imageUrl = user.image_url;
           userData.phoneNumber = user.phone_number;

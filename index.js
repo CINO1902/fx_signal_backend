@@ -1,15 +1,15 @@
 const express = require("express");
-const http = require("http");
 const port = process.env.PORT || 3000;
 const mongoose = require("mongoose");
 const router = require("./route/register");
-const admin = require('firebase-admin');
 const login = require("./route/login");
 const emailOTP = require("./route/sendOtp");
 const createSignal = require("./route/createSignal");
 const getprices = require("./route/getPrices");
 const addComment = require("./route/addComment");
 const copyTrade = require("./route/copyTrade");
+const notification = require("./route/notification");
+const chatmessage = require("./route/sendmessage");
 // const server = require('./route/getPrices')
 
 // const pairPrice = require("./route/getPrices");
@@ -33,6 +33,8 @@ app.use("/route",createSignal);
 app.use("/route",getprices);
 app.use("/route",addComment);
 app.use("/route",copyTrade);
+app.use("/route",notification);
+app.use("/route",chatmessage);
 // app.use("/route",pairPrice);
 app.route("/").get((req,res)=>{
 res.json("hello world");
