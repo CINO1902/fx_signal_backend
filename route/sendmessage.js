@@ -32,10 +32,16 @@ router.route('/:userId/getConversation').get(async (req, res) => {
 
 router.route('/:conversationId/messages').get(async (req, res) => {
     const { conversationId } = req.params;
+    console.log(conversationId)
     try {
       const messages = await Message.find({ conversation: conversationId })
                                     .sort({ createdAt: 1 });
-      res.json(messages);
+                                    if(!messages){
+                                      res.status(404).json(messages);
+                                    }else{
+                                      res.json(messages);
+                                    }
+     
     } catch (error) {
       console.error("Error fetching messages:", error);
       res.status(500).json({ error: "Internal server error" });

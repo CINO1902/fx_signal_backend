@@ -11,13 +11,14 @@ const messageSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
-
+  messageId_sender: {
+    type: String,
+  },
+  messageId_receiver: {
+    type: String,
+  },
   content: {
     type: String,
-    required: true
-  },
-  conversationId: {
-    type: Number,
     required: true
   },
   // Timestamp can be automatically handled by Mongoose if you use timestamps in schema options

@@ -1,5 +1,5 @@
 const express = require("express");
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 const mongoose = require("mongoose");
 const router = require("./route/register");
 const login = require("./route/login");
