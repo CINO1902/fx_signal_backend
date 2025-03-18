@@ -34,18 +34,21 @@ router.route('/:conversationId/messages').get(async (req, res) => {
     const { conversationId } = req.params;
     console.log(conversationId)
     try {
-      const messages = await Message.find({ conversation: conversationId })
-                                    .sort({ createdAt: 1 });
-                                    if(!messages){
-                                      res.status(404).json(messages);
-                                    }else{
-                                      res.json(messages);
-                                    }
-     
+      const objectId = new mongoose.Types.ObjectId(conversationId);
+    
+      const messages = await Message.find({ conversation: objectId }).sort({ createdAt: 1 });
+    
+      if (messages.length === 0) {
+        return res.status(404).json(messages);
+      }
+    
+      return res.status(200).json(messages);
+    
     } catch (error) {
       console.error("Error fetching messages:", error);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ success: false, error: "Internal server error" });
     }
+    
   });
 
 
