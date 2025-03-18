@@ -39,7 +39,7 @@ router.route('/:conversationId/messages').get(async (req, res) => {
       const messages = await Message.find({ conversation: objectId }).sort({ createdAt: 1 });
     
       if (messages.length === 0) {
-        return res.status(200).json({ message: "No messages found", data: [] });
+        return res.status(404).json({ message: "No messages found", data: [] });
       }
     
       return res.status(200).json({ success: true, data: messages });
