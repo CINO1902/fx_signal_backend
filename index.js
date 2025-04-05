@@ -10,6 +10,7 @@ const addComment = require("./route/addComment");
 const copyTrade = require("./route/copyTrade");
 const notification = require("./route/notification");
 const chatmessage = require("./route/sendmessage");
+const plans = require("./route/plans");
 // const server = require('./route/getPrices')
 
 // const pairPrice = require("./route/getPrices");
@@ -35,6 +36,7 @@ app.use("/route",addComment);
 app.use("/route",copyTrade);
 app.use("/route",notification);
 app.use("/route",chatmessage);
+app.use("/route",plans);
 // app.use("/route",pairPrice);
 app.route("/").get((req,res)=>{
 res.json("hello world");

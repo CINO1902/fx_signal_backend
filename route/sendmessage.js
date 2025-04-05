@@ -36,7 +36,7 @@ router.route('/:conversationId/messages').get(async (req, res) => {
     try {
       const objectId = new mongoose.Types.ObjectId(conversationId);
     
-      const messages = await Message.find({ conversation: objectId }).sort({ createdAt: 1 });
+      const messages = await Message.find({ conversation: objectId  }).sort({ createdAt: 1 });
     
       if (messages.length === 0) {
         return res.status(404).json({ message: "No messages found", data: [] });
@@ -101,6 +101,8 @@ router.route('/:conversationId/messages').get(async (req, res) => {
     }
   });
 
+
+  // Endpoint for incremental sync: fetch conversation after a given timestamp
   router.route('/conversations/:userId/Conversation').get(async (req, res) => {
     const { userId } = req.params;
     const { since } = req.query; // 'since' should be an ISO-formatted timestamp
