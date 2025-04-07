@@ -24,9 +24,8 @@ const createRefreshToken = (email, userId) => {
 
 const validateToken = (req, res, next) => {
   let accessToken = req.headers["authorization"];
-  console.log(accessToken)
   accessToken = accessToken.slice(7,accessToken.length);
-
+  console.log(accessToken)
   if(accessToken){
     verify(accessToken, process.env.SIGN_KEY,(err,decoded)=>{
         if(err){
