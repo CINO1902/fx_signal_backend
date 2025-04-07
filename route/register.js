@@ -64,7 +64,7 @@ router.route('/createaccount').post(async (req, res) => {
 router.route('/deleteAccount').post(async (req,res)=>{
   let userId = req.decoded.userId 
   try {
-    let getdocument = await register.findOneById(userId);
+    let getdocument = await register.findById(userId);
     if (!getdocument) {
       return res.status(404).json({status:'fail', message:"Profile does not exist"})
     } else {

@@ -30,14 +30,14 @@ const validateToken = (req, res, next) => {
   if(accessToken){
     verify(accessToken, process.env.SIGN_KEY,(err,decoded)=>{
         if(err){
-            return res.json({success:'false', msg:'Invalid Token'})
+            return res.status(401).json({success:'false', msg:'Invalid Token'})
         }else{
             req.decoded=decoded;
             next();
         }
     })
   }else{
-    return res.json({success:'false', msg:'Token not provided'})
+    return  res.status(401).json({success:'false', msg:'Token not provided'})
   }
 };
 

@@ -165,9 +165,10 @@ router.post("/complete-profile", async(req,res)=>{
 
 router.route('/updateProfilePicture').post(validateToken, async (req,res)=>{
     let userId = req.decoded.userId  
+    console.log(userId)
     const{ imageUrl} = req.body
     try {
-      let getdocument = await register.findOneById(userId);
+      let getdocument = await register.findById(userId);
       if (!getdocument) {
         return res.status(404).json({status:'fail', message:"Profile does not exist"})
       } else {
