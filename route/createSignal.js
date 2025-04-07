@@ -83,7 +83,7 @@ router.route('/createSignal').post(async (req,res)=>{
 
 
   router.route('/getSignals').post(validateToken, async (req,res)=>{
-    let userId = req.decoded.userId
+    let userId = req.decoded.email
     console.log(userId)
      try{
          let getSignals =  await signals.find({}).sort({ date_created: -1 });
@@ -111,7 +111,7 @@ router.route('/createSignal').post(async (req,res)=>{
   })
 
   router.route('/getSignalsbyId').get(validateToken, async (req, res) => {
-    let userId = req.decoded.userId
+    let userId = req.decoded.email
     const { signalId } = req.query;
     console.log(signalId);
     

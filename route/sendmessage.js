@@ -9,7 +9,7 @@ const registered = require('../model/register')
 const mongoose = require('mongoose');
 
 
-router.route('/:userId/getConversation').get(validateToken, async (req, res) => {
+router.route('/getConversation').get(validateToken, async (req, res) => {
 
   let userId = req.decoded.userId
   try {
@@ -54,7 +54,7 @@ router.route('/:conversationId/messages').get(async (req, res) => {
 
 
   router.route('/:userId/conversation').get(validateToken, async (req, res) => {
-    let userId = req.decoded.userId 
+    let userId = req.params;
     console.log(userId)
     try {
         const objectId = new mongoose.Types.ObjectId(userId);
