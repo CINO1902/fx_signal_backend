@@ -30,6 +30,10 @@ const registered = Schema({
     image_url:{
         type:String
     },
+    plan:{
+        type: mongoose.Schema.Types.ObjectId,
+         ref: 'plans'
+    },
     allownotification:{
         type:Boolean
     },
