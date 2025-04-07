@@ -4,6 +4,7 @@ const nodemailer = require('nodemailer')
 const otpModel = require('../model/otpModel')
 const register = require('../model/register')
 const { validateToken } = require("../jwt/middleware");
+const mongoose = require('mongoose');
 
 router.post("/request-otp", async(req,res)=>{
     const{email} = req.body
@@ -172,7 +173,8 @@ router.route('/updateProfilePicture').post(validateToken, async (req,res)=>{
       if (!getdocument) {
         return res.status(404).json({status:'fail', message:"Profile does not exist"})
       } else {
-        await register.updateOne({email:email},
+        const objectId = new mongoose.Types.ObjectId(userId);
+        await register.findByIdAndUpdate(objectId,
             {$set: {
             image_url:imageUrl, 
         }},

@@ -53,7 +53,7 @@ router.route('/addCopy').post(validateToken,async (req,res)=>{
 
 
 router.route('/getCopy').post(validateToken, async (req, res) => {
-    let userId = req.decoded.userId
+    let userId = req.decoded.email
     console.log(userId)
     try {
       
