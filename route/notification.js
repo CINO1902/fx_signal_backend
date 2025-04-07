@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const notification = require("../model/notification");
 const personalNotification = require("../model/personalNotification");
-
+const { validateToken } = require("../jwt/middleware");
 const admin = require('firebase-admin');
 require('dotenv').config();
 
@@ -42,8 +42,8 @@ async function sendFCMNotification(deviceToken, title, body) {
 }
 
 
-router.route('/getNotification').get(async (req, res) => {
-  const { userId } = req.query;
+router.route('/getNotification').get(validateToken, async (req, res) => {
+    let userId = req.decoded.userId
   try {
     let notifications = await notification.find();
     let personalNotifications = await personalNotification.find({ user_id: userId });

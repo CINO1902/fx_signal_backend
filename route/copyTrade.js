@@ -3,14 +3,16 @@ const router = express.Router();
 const copyModel = require("../model/copyModel");
 const signals = require('../model/createSignal')
 const crypto = require("crypto");
+const { validateToken } = require("../jwt/middleware");
 
 function generateRandomID() {
     return crypto.randomInt(100000, 999999).toString();
   }
   
 
-router.route('/addCopy').post(async (req,res)=>{
-    const {userId, signalId} = req.body;
+router.route('/addCopy').post(validateToken,async (req,res)=>{
+    let userId = req.decoded.userId 
+    const {signalId} = req.body;
     try {
         let date = new Date();
         const existingDocument = await copyModel.findOne({ user_id: userId, signal_id: signalId });
@@ -50,9 +52,11 @@ router.route('/addCopy').post(async (req,res)=>{
 
 
 
-router.route('/getCopy').post(async (req, res) => {
-    const { userId } = req.body;
+router.route('/getCopy').post(validateToken, async (req, res) => {
+    let userId = req.decoded.userId
+    console.log(userId)
     try {
+      
         let userCopies = await copyModel.find({ user_id: userId }).sort({ date_created: -1 });
 
         if (userCopies.length === 0) {

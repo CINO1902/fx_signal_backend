@@ -3,7 +3,7 @@ const router = express.Router();
 const nodemailer = require('nodemailer') 
 const otpModel = require('../model/otpModel')
 const register = require('../model/register')
-
+const { validateToken } = require("../jwt/middleware");
 
 router.post("/request-otp", async(req,res)=>{
     const{email} = req.body
@@ -163,10 +163,11 @@ router.post("/complete-profile", async(req,res)=>{
 })
 
 
-router.route('/updateProfilePicture').post(async (req,res)=>{
-    const{email, imageUrl} = req.body
+router.route('/updateProfilePicture').post(validateToken, async (req,res)=>{
+    let userId = req.decoded.userId  
+    const{ imageUrl} = req.body
     try {
-      let getdocument = await register.findOne({email:email});
+      let getdocument = await register.findOneById(userId);
       if (!getdocument) {
         return res.status(404).json({status:'fail', message:"Profile does not exist"})
       } else {

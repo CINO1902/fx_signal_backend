@@ -4,8 +4,8 @@ const plans = require('../model/plans');
 const crypto = require("crypto");
 const userPlans = require("../model/userPlan");
 const Users = require("../model/register");
-const { register } = require("module");
-
+const mongoose = require('mongoose');
+const { validateToken } = require("../jwt/middleware");
 
 function generateRandomID() {
     return crypto.randomInt(100000, 999999).toString();
@@ -56,8 +56,9 @@ router.route('/createPlan').post(async (req, res) => {
   });
 
 
-  router.route('/buyPlan').get(async (req, res) => {
-    const { id, userId } = req.query;
+  router.route('/buyPlan').post(validateToken ,async (req, res) => {
+    let userId = req.decoded.userId 
+    const { id } = req.body;
     try {
       const date = new Date();
       // Calculate date_expired by adding 30 days to current date
@@ -65,7 +66,7 @@ router.route('/createPlan').post(async (req, res) => {
       
       // Convert userId into a mongoose ObjectId
       const objectId = new mongoose.Types.ObjectId(userId);
-      
+      console.log(id)
       // Find the plan using the provided id
       const getPlan = await plans.findOne({ id: id });
       if (!getPlan) {
@@ -87,7 +88,7 @@ router.route('/createPlan').post(async (req, res) => {
       await Users.findByIdAndUpdate(objectId, { plan: userPlan._id });
       
       // Respond with success
-      return res.status(200).json({ status: "success", msg: "Successful", plans: getPlan });
+      return res.status(200).json({ status: "success", msg: "Successful", plans: userPlan });
     } catch (error) {
       console.error("Error processing buyPlan:", error);
       return res.status(500).json({ error: "Internal server error" });

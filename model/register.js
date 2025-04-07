@@ -32,7 +32,7 @@ const registered = Schema({
     },
     plan:{
         type: mongoose.Schema.Types.ObjectId,
-         ref: 'plans'
+        ref: 'userPlans'
     },
     allownotification:{
         type:Boolean
@@ -44,6 +44,9 @@ const registered = Schema({
         type:String
     },
     token:{
+        type:String
+    },
+    refreshToken:{
         type:String
     },
     date:{

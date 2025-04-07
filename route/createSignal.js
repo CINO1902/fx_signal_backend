@@ -9,7 +9,7 @@ const sendFCMNotification = require('../route/notification')
 const sendNotificationToAllUsers = require('../route/notification2')
 var request = require('request');
 const crypto = require("crypto");
-
+const { validateToken } = require("../jwt/middleware");
 function generateRandomID() {
   return crypto.randomInt(100000, 999999).toString();
 }
@@ -82,9 +82,9 @@ router.route('/createSignal').post(async (req,res)=>{
   })
 
 
-  router.route('/getSignals').post(async (req,res)=>{
-   const {userId} = req.body;
-   console.log(userId)
+  router.route('/getSignals').post(validateToken, async (req,res)=>{
+    let userId = req.decoded.userId
+    console.log(userId)
      try{
          let getSignals =  await signals.find({}).sort({ date_created: -1 });
          if(getSignals.length == 0){
@@ -110,8 +110,9 @@ router.route('/createSignal').post(async (req,res)=>{
        }
   })
 
-  router.route('/getSignalsbyId').get(async (req, res) => {
-    const { userId, signalId } = req.query;
+  router.route('/getSignalsbyId').get(validateToken, async (req, res) => {
+    let userId = req.decoded.userId
+    const { signalId } = req.query;
     console.log(signalId);
     
     try {

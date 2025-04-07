@@ -1,9 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
-const {createTokens} = require('../jwt/middleware')
+const {createTokens, createRefreshToken} = require('../jwt/middleware')
 const Users = require('../model/register')
 const admin = require('../firebaseAdmin')
+const { verify } = require("jsonwebtoken");
+const { refreshToken } = require("firebase-admin/app");
 
 
 router.route("/login").post(async (req, res) => {
@@ -63,10 +65,14 @@ router.route("/login").post(async (req, res) => {
           admin.messaging().subscribeToTopic([fcmtoken], "allUsers")
             .then(response => console.log("Successfully subscribed:", response))
             .catch(error => console.error("Subscription error:", error));
-
-          const accessToken = createTokens(emailuse);
+            let jwtaccesstoken =  typeof userData.userId === 'object' && userData.userId.toHexString
+            ? userData.userId.toHexString()
+            : userData.userId.toString();
+          const accessToken = createTokens(emailuse, jwtaccesstoken);
+          const refreshToken = createRefreshToken(emailuse);
           return res.status(200).json({
             token: accessToken,
+            refreshToken: refreshToken,
             msg: "Successfully Logged In",
             success: 'true',
             user: userData
@@ -109,6 +115,41 @@ router.route("/logout").post(async (req, res) => {
     }
   } catch (e) {
     return res.status(500).json({ msg: "Something Went Wrong", success: 'false' });
+  }
+});
+
+
+router.route("/refreshToken").post(async (req, res) => {
+  const { email, refreshToken } = req.body;
+  const emailuse = email.toLowerCase().trim();
+
+  try {
+    // Verify the provided refresh token using the refresh secret key
+    const payload = verify(refreshToken, process.env.REFRESH_SIGN_KEY);
+    
+    // Ensure the token belongs to the requesting user
+    if (payload.email !== emailuse) {
+      return res.status(401).json({ msg: "Invalid refresh token" });
+    }
+
+    // Generate new tokens
+    const newAccessToken = createTokens(emailuse, payload.userId);
+    const newRefreshToken = createRefreshToken(emailuse);
+
+    // Update the user's document with the new tokens
+    await Users.findOneAndUpdate(
+      { email: emailuse },
+      { token: newAccessToken, refreshToken: newRefreshToken }
+    );
+
+    return res.status(200).json({
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+      msg: "New tokens generated"
+    });
+  } catch (error) {
+    console.error("Error refreshing token:", error);
+    return res.status(401).json({ msg: "Invalid or expired refresh token" });
   }
 });
 

@@ -4,13 +4,14 @@ const nodemailer = require('nodemailer')
 const otpModel = require('../model/otpModel')
 const Message = require('../model/messageSchema')
 const Conversation = require('../model/conversationSchema')
-
+const { validateToken } = require("../jwt/middleware");
 const registered = require('../model/register')
 const mongoose = require('mongoose');
 
 
-router.route('/:userId/getConversation').get(async (req, res) => {
-  const { userId } = req.params;
+router.route('/:userId/getConversation').get(validateToken, async (req, res) => {
+
+  let userId = req.decoded.userId
   try {
     const objectId = new mongoose.Types.ObjectId(userId);
     const conversation = await Conversation.findOne({ participants: objectId })
@@ -52,8 +53,8 @@ router.route('/:conversationId/messages').get(async (req, res) => {
   });
 
 
-  router.route('/:userId/conversation').get(async (req, res) => {
-    const { userId } = req.params;
+  router.route('/:userId/conversation').get(validateToken, async (req, res) => {
+    let userId = req.decoded.userId 
     console.log(userId)
     try {
         const objectId = new mongoose.Types.ObjectId(userId);

@@ -1,14 +1,26 @@
 const { sign, verify } = require("jsonwebtoken");
 
-
-const createTokens = (email) => {
+const createTokens = (email, userId) => {
   const accessToken = sign(
-    { email: email },
+    { email: email, userId: userId },
     process.env.SIGN_KEY,
+    { expiresIn: "24h" }  // Token expires in 24 hours
   );
 
   return accessToken;
 };
+
+const createRefreshToken = (email, userId) => {
+  // It's a good practice to use a different secret key for refresh tokens.
+  // They typically last longer (e.g., 7 days or 30 days)
+  const refreshToken = sign(
+    { email: email},
+    process.env.REFRESH_SIGN_KEY,
+    { expiresIn: "7d" }  // Refresh token expires in 7 days
+  );
+  return refreshToken;
+};
+
 
 const validateToken = (req, res, next) => {
   let accessToken = req.headers["authorization"];
@@ -29,4 +41,4 @@ const validateToken = (req, res, next) => {
   }
 };
 
-module.exports = { createTokens, validateToken};
+module.exports = { createTokens,createRefreshToken, validateToken};
