@@ -46,6 +46,7 @@ router.route('/createaccount').post(async (req, res) => {
 
     // Update the user's token field with the generated access token
     newUser.token = accessToken;
+    newUser.refreshToken = refreshToken
     await newUser.save();
 
     return res.status(201).json({

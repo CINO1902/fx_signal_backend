@@ -56,21 +56,40 @@ router.route('/createPlan').post(async (req, res) => {
   });
 
 
-  router.route('/buyPlan').post(validateToken ,async (req, res) => {
-    let userId = req.decoded.userId 
+  router.route('/buyPlan').post(validateToken, async (req, res) => {
+    const userId = req.decoded.userId;
     const { id } = req.body;
+    
     try {
-      const date = new Date();
-      // Calculate date_expired by adding 30 days to current date
-      const dateExpired = new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000);
-      
-      // Convert userId into a mongoose ObjectId
       const objectId = new mongoose.Types.ObjectId(userId);
-      console.log(id)
+      // Fetch the user details and populate the plan field
+      const getUserDetails = await Users.findById(objectId).populate('plan');
+      console.log(getUserDetails)
+      const currentDate = new Date();
+  
+      // Check if the user already has an active plan
+      if (getUserDetails.plan && getUserDetails.plan.date_expired) {
+        // Safely compare the expiration date if it's present
+        const planExpiry = new Date(getUserDetails.plan.date_expired);
+        if (planExpiry > currentDate) {
+          return res.status(400).json({
+            status: "fail",
+            msg: "Your current plan is still active. Please wait until it expires to buy a new plan."
+          });
+        }
+      }
+      
+      // Calculate date_expired by adding 30 days to the current date
+      const dateExpired = new Date(currentDate.getTime() + 30 * 24 * 60 * 60 * 1000);
+      
       // Find the plan using the provided id
       const getPlan = await plans.findOne({ id: id });
       if (!getPlan) {
-        return res.status(404).json({ status: "empty", msg: "There are no plans found", plans: null });
+        return res.status(404).json({ 
+          status: "empty", 
+          msg: "There are no plans found", 
+          plans: null 
+        });
       }
       
       // Create a user-specific plan document (in userPlans collection)
@@ -80,15 +99,19 @@ router.route('/createPlan').post(async (req, res) => {
         user_id: objectId,
         planPrice: getPlan.planPrice,
         planPrivielege: getPlan.planPrivielege,
-        date_bought: date,
+        date_bought: currentDate,
         date_expired: dateExpired,
       });
       
-      // Update the Users (registered) collection by setting the plan field to userPlan._id
+      // Update the user's document by setting the plan field to the new userPlan's _id
       await Users.findByIdAndUpdate(objectId, { plan: userPlan._id });
       
-      // Respond with success
-      return res.status(200).json({ status: "success", msg: "Successful", plans: userPlan });
+      // Respond with success and the new plan details
+      return res.status(200).json({ 
+        status: "success", 
+        msg: "Successful", 
+        plans: userPlan 
+      });
     } catch (error) {
       console.error("Error processing buyPlan:", error);
       return res.status(500).json({ error: "Internal server error" });

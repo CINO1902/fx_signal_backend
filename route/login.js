@@ -70,6 +70,10 @@ router.route("/login").post(async (req, res) => {
             : userData.userId.toString();
           const accessToken = createTokens(emailuse, jwtaccesstoken);
           const refreshToken = createRefreshToken(emailuse);
+          await Users.findOneAndUpdate(
+            { email: emailuse },
+            { token: accessToken,refreshToken:refreshToken}
+          );
           return res.status(200).json({
             token: accessToken,
             refreshToken: refreshToken,
