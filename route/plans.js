@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const plans = require('../model/plans');
 const crypto = require("crypto");
+const axios = require('axios')
 const userPlans = require("../model/userPlan");
 const Users = require("../model/register");
 const mongoose = require('mongoose');
@@ -98,9 +99,34 @@ router.route('/createPlan').post(async (req, res) => {
   
   router.route('/buyPlan').post(validateToken, async (req, res) => {
     const userId = req.decoded.userId;
-    const { id } = req.body;
+    const { id, reference } = req.body; // assuming `reference` is passed in the body
   
     try {
+      
+      console.log(reference)
+      // Check if the reference is purely numeric (i.e. contains no alphabetic characters)
+ // Check if the reference looks like a Paystack reference (e.g., doesn't contain "_")
+if (!reference.includes('_')) {
+  // If it's likely a Paystack reference, verify the transaction
+  const verificationResponse = await verifyTransaction(reference);
+  console.log(reference)
+  if (
+    !verificationResponse.data ||
+    !verificationResponse.data.data ||
+    verificationResponse.data.data.status !== 'success'
+  ) {
+
+    return res.status(400).json({
+      status: "failed",
+      msg: "Transaction verification failed",
+      verification: verificationResponse.data
+    });
+  }
+}
+
+  
+      // Proceed with the buyPlan endpoint functionality
+  
       const objectId = new mongoose.Types.ObjectId(userId);
       const currentDate = new Date();
       const dateExpired = new Date(currentDate.getTime() + 30 * 24 * 60 * 60 * 1000);
@@ -118,6 +144,7 @@ router.route('/createPlan').post(async (req, res) => {
         id: getPlan.id,
         planName: getPlan.planName,
         user_id: objectId,
+        reference: reference,
         planPrice: getPlan.planPrice,
         planPrivielege: getPlan.planPrivielege,
         date_bought: currentDate,
@@ -136,6 +163,22 @@ router.route('/createPlan').post(async (req, res) => {
       return res.status(500).json({ error: "Internal server error" });
     }
   });
+  
+  // Function to verify a transaction with Paystack
+  async function verifyTransaction(reference) {
+    try {
+      const response = await axios.get(`https://api.paystack.co/transaction/verify/${reference}`, {
+        headers: {
+          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+        },
+      });
+      return response;
+    } catch (error) {
+      console.log(error)
+      throw error;
+    }
+  }
+    
   
   
 

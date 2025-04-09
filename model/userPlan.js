@@ -19,6 +19,9 @@ const userPlans = Schema({
     planPrivielege:{
         type:Array
     },
+    reference:{
+        type:String
+    },
     date_bought:{
         type:Date
     },
