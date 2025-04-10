@@ -96,35 +96,61 @@ router.route('/createPlan').post(async (req, res) => {
     }
   });
 
+  router.route('/buyPackage').post(validateToken, async (req, res) => {
+    const { reference } = req.body;
+
+    try {
+      console.log(reference)
+      // Check if the reference is purely numeric (i.e. contains no alphabetic characters)
+      // Check if the reference looks like a Paystack reference (e.g., doesn't contain "_")
+    if (!reference.includes('_')) {
+      // If it's likely a Paystack reference, verify the transaction
+      const verificationResponse = await verifyTransaction(reference);
+      console.log(reference)
+      if (
+        !verificationResponse.data ||
+        !verificationResponse.data.data ||
+        verificationResponse.data.data.status !== 'success'
+      ) {
+
+        return res.status(400).json({
+          status: "failed",
+          msg: "Transaction verification failed",
+          verification: verificationResponse.data
+        });
+      }
+    }}catch(error){
+      console.error("Error processing buyPlan:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  })
+
   
   router.route('/buyPlan').post(validateToken, async (req, res) => {
     const userId = req.decoded.userId;
     const { id, reference } = req.body; // assuming `reference` is passed in the body
   
     try {
-      
       console.log(reference)
       // Check if the reference is purely numeric (i.e. contains no alphabetic characters)
- // Check if the reference looks like a Paystack reference (e.g., doesn't contain "_")
-if (!reference.includes('_')) {
-  // If it's likely a Paystack reference, verify the transaction
-  const verificationResponse = await verifyTransaction(reference);
-  console.log(reference)
-  if (
-    !verificationResponse.data ||
-    !verificationResponse.data.data ||
-    verificationResponse.data.data.status !== 'success'
-  ) {
+      // Check if the reference looks like a Paystack reference (e.g., doesn't contain "_")
+    if (!reference.includes('_')) {
+      // If it's likely a Paystack reference, verify the transaction
+      const verificationResponse = await verifyTransaction(reference);
+      console.log(reference)
+      if (
+        !verificationResponse.data ||
+        !verificationResponse.data.data ||
+        verificationResponse.data.data.status !== 'success'
+      ) {
 
-    return res.status(400).json({
-      status: "failed",
-      msg: "Transaction verification failed",
-      verification: verificationResponse.data
-    });
-  }
-}
-
-  
+        return res.status(400).json({
+          status: "failed",
+          msg: "Transaction verification failed",
+          verification: verificationResponse.data
+        });
+      }
+    }
       // Proceed with the buyPlan endpoint functionality
   
       const objectId = new mongoose.Types.ObjectId(userId);
