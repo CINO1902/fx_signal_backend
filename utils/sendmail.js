@@ -81,4 +81,104 @@ const sendOTPEmail = async (email, otp) => {
   return transporter.sendMail(mailOptions);
 };
 
-module.exports = { sendOTPEmail };
+
+const sendProductEmail = async (email, billingDetails) => {
+    // Create a transporter
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "caleboruta.co@gmail.com",
+        pass: "jrnbecbxpryesqzq"
+      }
+    });
+  
+    // Define mail options with styled HTML content
+    const mailOptions = {
+          from: "caleboruta.co@gmail.com",
+          to: email,
+          subject: "Your Purchase Confirmation - FX Signal Trade",
+          html: `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Purchase Confirmation</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        background-color: #f4f4f4;
+                        padding: 20px;
+                    }
+                    .container {
+                        max-width: 600px;
+                        margin: 0 auto;
+                        background: #ffffff;
+                        padding: 20px;
+                        border-radius: 8px;
+                        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+                        text-align: left;
+                    }
+                    .header {
+                        text-align: center;
+                        margin-bottom: 20px;
+                    }
+                    .billing {
+                        margin: 20px 0;
+                        border-top: 1px solid #eee;
+                        padding-top: 10px;
+                    }
+                    .footer {
+                        font-size: 12px;
+                        color: #777;
+                        text-align: center;
+                        margin-top: 20px;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h2>Purchase Confirmation</h2>
+                    </div>
+                    <p>Dear ${billingDetails.firstName},</p>
+                    <p>Thank you for your purchase of the <strong>ForexMaster Pro Indicator</strong>.</p>
+                    <p>Please find attached your product along with your purchase invoice.</p>
+                    
+                    <div class="billing">
+                        <h3>Billing Details</h3>
+                        <p><strong>Name:</strong> ${billingDetails.firstName} ${billingDetails.lastName}</p>
+                        <p><strong>Email:</strong> ${billingDetails.email}</p>
+                        <p><strong>Address:</strong> ${billingDetails.address}</p>
+                        <p><strong>City:</strong> ${billingDetails.city}</p>
+                        <p><strong>State:</strong> ${billingDetails.state}</p>
+                        <p><strong>ZIP Code:</strong> ${billingDetails.zipCode}</p>
+                        <p><strong>Country:</strong> ${billingDetails.country}</p>
+                    </div>
+                    
+                    <p>If you have any questions or need further assistance, please contact our support team.</p>
+                    <p>Best regards,</p>
+                    <p><strong>FX Signal Trade Team</strong></p>
+                    
+                    <div class="footer">
+                        <p>Contact us: support@yourcompany.com</p>
+                        <p><a href="https://yourcompany.com">www.yourcompany.com</a></p>
+                    </div>
+                </div>
+            </body>
+            </html>
+          `,
+          attachments: [
+            {
+              filename: 'ForexMasterPro.pdf',
+              path: '/path/to/ForexMasterPro.pdf' // adjust the path to where your PDF is located
+            }
+          ]
+      };
+      
+  
+    // Send the email and return the promise
+    return transporter.sendMail(mailOptions);
+  };
+
+module.exports = { sendOTPEmail , sendProductEmail};
