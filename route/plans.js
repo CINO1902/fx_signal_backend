@@ -120,7 +120,7 @@ router.route('/createPlan').post(async (req, res) => {
         });
       }else{
         await sendOTPEmail(email, '00000');
-        return res.status(400).json({
+        return res.status(200).json({
           status: "success",
           msg: "Transaction verification Successfully",
           verification: verificationResponse.data
