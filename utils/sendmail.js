@@ -1,5 +1,4 @@
-// utils/sendOTPEmail.js
-const nodemailer = require('nodemailer') 
+const nodemailer = require('nodemailer');
 
 /**
  * Sends an OTP email using Nodemailer.
@@ -8,7 +7,7 @@ const nodemailer = require('nodemailer')
  * @param {string} otp - The one-time password.
  * @returns {Promise} - Resolves if the email is sent successfully.
  */
-export const sendOTPEmail = async (email, otp) => {
+const sendOTPEmail = async (email, otp) => {
   // Create a transporter
   const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -81,3 +80,5 @@ export const sendOTPEmail = async (email, otp) => {
   // Send the email and return the promise
   return transporter.sendMail(mailOptions);
 };
+
+module.exports = { sendOTPEmail };
