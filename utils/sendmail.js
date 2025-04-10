@@ -1,4 +1,8 @@
 const nodemailer = require('nodemailer');
+const path = require('path');
+
+const pdfPath = path.resolve(__dirname, '../file/copyofinsidelife.pdf');
+
 
 /**
  * Sends an OTP email using Nodemailer.
@@ -171,7 +175,7 @@ const sendProductEmail = async (email, billingDetails) => {
           attachments: [
             {
               filename: 'ForexMasterPro.pdf',
-              path: '../file/copyofinsidelife.pdf' // adjust the path to where your PDF is located
+              path: pdfPath // adjust the path to where your PDF is located
             }
           ]
       };
