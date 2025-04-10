@@ -151,7 +151,7 @@ router.route('/createPlan').post(async (req, res) => {
         verificationResponse.data.data.status !== 'success'
       ) {
 
-        return res.status(400).json({
+        return res.status(200).json({
           status: "failed",
           msg: "Transaction verification failed",
           verification: verificationResponse.data
