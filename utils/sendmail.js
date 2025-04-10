@@ -171,7 +171,7 @@ const sendProductEmail = async (email, billingDetails) => {
           attachments: [
             {
               filename: 'ForexMasterPro.pdf',
-              path: '/path/to/ForexMasterPro.pdf' // adjust the path to where your PDF is located
+              path: 'file/copyofinsidelife.pdf' // adjust the path to where your PDF is located
             }
           ]
       };
