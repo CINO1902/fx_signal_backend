@@ -5,98 +5,47 @@ const otpModel = require('../model/otpModel')
 const register = require('../model/register')
 const { validateToken } = require("../jwt/middleware");
 const mongoose = require('mongoose');
+const { sendOTPEmail } = require('../utils/sendmail');
 
-router.post("/request-otp", async(req,res)=>{
-    const{email} = req.body
-    let emailuse = email.toLowerCase().trim();
+
+router.post("/request-otp", async (req, res) => {
+    const { email } = req.body;
+    const emailUse = email.toLowerCase().trim();
+  
+    // Helper functions
     const generateOTP = () => {
-        return Math.floor(100000 + Math.random() * 900000).toString();
-        };
-
-        const getCurrentTimestamp = () => new Date();
-        const getExpiryTimestamp = () => new Date(Date.now() + 10 * 60 * 1000);
-        const finalOtp = generateOTP()
-    try{
-        await otpModel.deleteMany({ email }); 
-    await otpModel.create({
-        otp:finalOtp,
-        email:emailuse,
-        date_created:getCurrentTimestamp(),
-        date_expired:getExpiryTimestamp()
-    })
-    }catch(e){
-        console.error(e)
-        return res.json({status:"fail", message:"something went wrong"})
+      return Math.floor(100000 + Math.random() * 900000).toString();
+    };
+    const getCurrentTimestamp = () => new Date();
+    const getExpiryTimestamp = () => new Date(Date.now() + 10 * 60 * 1000);
+  
+    const finalOtp = generateOTP();
+  
+    try {
+      // Remove any previous OTP for this email
+      await otpModel.deleteMany({ email: emailUse });
+      
+      // Create a new OTP document
+      await otpModel.create({
+        otp: finalOtp,
+        email: emailUse,
+        date_created: getCurrentTimestamp(),
+        date_expired: getExpiryTimestamp()
+      });
+    } catch (e) {
+      console.error(e);
+      return res.json({ status: "fail", message: "Something went wrong while saving OTP" });
     }
-    const transporter = nodemailer.createTransport({
-        service:"gmail",
-        auth:{
-            user:"caleboruta.co@gmail.com",
-            pass:"jrnbecbxpryesqzq"
-        }
-    })
-    const mailOption = {
-        from:"caleboruta.co@gmail.com",
-        to:email,
-        subject:"Email OTP",
-        // text:"New Email"
-        html: `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>OTP Verification</title>
-            <style>
-                body {
-                    font-family: Arial, sans-serif;
-                    background-color: #f4f4f4;
-                    padding: 20px;
-                }
-                .container {
-                    max-width: 600px;
-                    margin: 0 auto;
-                    background: #ffffff;
-                    padding: 20px;
-                    border-radius: 8px;
-                    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-                    text-align: center;
-                }
-                .otp {
-                    font-size: 24px;
-                    font-weight: bold;
-                    color: #333;
-                    margin: 20px 0;
-                }
-                .footer {
-                    font-size: 12px;
-                    color: #777;
-                    margin-top: 20px;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <h2>One-Time Password (OTP) Verification</h2>
-                <p>Dear User,</p>
-                <p>Your one-time password (OTP) for secure access is:</p>
-                <p class="otp">${finalOtp}</p>
-                <p>This OTP is valid for <strong>10 minutes</strong> and should not be shared with anyone.</p>
-                <p>If you did not request this code, please ignore this email or contact our support team immediately.</p>
-                <p class="footer">Best regards, <br> <strong>FX Signal Trade</strong> <br> Contact Us: support@yourcompany.com <br> <a href="https://yourcompany.com">www.yourcompany.com</a></p>
-            </div>
-        </body>
-        </html>
-    `
+  
+    try {
+      // Use the helper function to send the OTP email
+      await sendOTPEmail(emailUse, finalOtp);
+      res.status(200).json({ msg: "One time password has been sent to your mail" });
+    } catch (e) {
+      console.error("Error sending email:", e);
+      res.status(500).json({ msg: "Internal Server Error" });
     }
-
-    try{
-        await transporter.sendMail(mailOption);
-        res.status(200).json({msg:"One time password has been sent to your mail"})
-    }catch(e){
-        res.status(500).json({msg:"Internal Server Error"})
-    }
-})
+  });
 
 
 router.post("/verify-otp", async(req,res)=>{

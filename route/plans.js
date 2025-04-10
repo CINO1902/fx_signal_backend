@@ -7,7 +7,7 @@ const userPlans = require("../model/userPlan");
 const Users = require("../model/register");
 const mongoose = require('mongoose');
 const { validateToken } = require("../jwt/middleware");
-
+const { sendOTPEmail } = require('../utils/sendmail');
 function generateRandomID() {
     return crypto.randomInt(100000, 999999).toString();
   }
@@ -96,8 +96,8 @@ router.route('/createPlan').post(async (req, res) => {
     }
   });
 
-  router.route('/buyPackage').post(validateToken, async (req, res) => {
-    const { reference } = req.body;
+  router.route('/buyPackage').post( async (req, res) => {
+    const { reference, email} = req.body;
 
     try {
       console.log(reference)
@@ -116,6 +116,13 @@ router.route('/createPlan').post(async (req, res) => {
         return res.status(400).json({
           status: "failed",
           msg: "Transaction verification failed",
+          verification: verificationResponse.data
+        });
+      }else{
+        await sendOTPEmail(emailUse, finalOtp);
+        return res.status(400).json({
+          status: "success",
+          msg: "Transaction verification Successfully",
           verification: verificationResponse.data
         });
       }
