@@ -185,4 +185,81 @@ const sendProductEmail = async (email, billingDetails) => {
     return transporter.sendMail(mailOptions);
   };
 
-module.exports = { sendOTPEmail , sendProductEmail};
+
+
+  const sendMessageReceivedEmail = async (email, firstname) => {
+    // Create a transporter using Gmail (or configure another provider)
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "caleboruta.co@gmail.com",
+        pass: "jrnbecbxpryesqzq"
+      }
+    });
+    
+    // Define mail options. You can customize the HTML content as needed.
+    const mailOptions = {
+      // Use a no-reply email address if available; otherwise, ensure the "from" address is clear.
+      from: '"FX Signal Trade" <noreply@forexsignaltrade.com>',
+      to: email,
+      subject: "We Have Received Your Message - FX Signal Trade",
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Message Received</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f4;
+                    padding: 20px;
+                }
+                .container {
+                    max-width: 600px;
+                    margin: 0 auto;
+                    background: #ffffff;
+                    padding: 20px;
+                    border-radius: 8px;
+                    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+                    text-align: left;
+                }
+                .header {
+                    text-align: center;
+                    margin-bottom: 20px;
+                }
+                .footer {
+                    font-size: 12px;
+                    color: #777;
+                    text-align: center;
+                    margin-top: 20px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h2>Thank You For Your Message!</h2>
+                </div>
+                <p>Dear ${firstname},</p>
+                <p>We have received your message and our team will review your inquiry shortly.</p>
+                <p>If your matter is urgent, please call us directly.</p>
+                <p>Thank you for reaching out to FX Signal Trade.</p>
+                <p>Best regards,</p>
+                <p><strong>FX Signal Trade Team</strong></p>
+                <div class="footer">
+                    <p>This is an automated message. Please do not reply directly to this email.</p>
+                    <p>Contact us: support@forexmasterpro.com | <a href="https://yourcompany.com">www.yourcompany.com</a></p>
+                </div>
+            </div>
+        </body>
+        </html>
+      `
+    };
+  
+    // Send the email and return the promise
+    return transporter.sendMail(mailOptions);
+  };
+
+module.exports = { sendOTPEmail , sendProductEmail, sendMessageReceivedEmail};
