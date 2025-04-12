@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 const path = require('path');
 
-const pdfPath = path.resolve(__dirname, '../file/copyofinsidelife.pdf');
+const pdfPath = path.resolve(__dirname, '../file/forexmasterpro.ex4');
 
 
 /**
