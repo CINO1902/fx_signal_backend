@@ -146,7 +146,7 @@ const sendProductEmail = async (email, billingDetails) => {
                         <h2>Purchase Confirmation</h2>
                     </div>
                     <p>Dear ${billingDetails.firstName},</p>
-                    <p>Thank you for your purchase of the <strong>ForexMaster Pro Indicator</strong>.</p>
+                    <p>Thank you for your purchase of the <strong>RallySignal Indicator</strong>.</p>
                     <p>Please find attached your product along with your purchase invoice.</p>
                     
                     <div class="billing">
@@ -165,8 +165,8 @@ const sendProductEmail = async (email, billingDetails) => {
                     <p><strong>FX Signal Trade Team</strong></p>
                     
                     <div class="footer">
-                        <p>Contact us: support@yourcompany.com</p>
-                        <p><a href="https://yourcompany.com">www.yourcompany.com</a></p>
+                        <p>Contact us: support@rallysignal.com</p>
+                        <p><a href="https://rallysignals.com">www.rallysignals.com</a></p>
                     </div>
                 </div>
             </body>
@@ -174,7 +174,7 @@ const sendProductEmail = async (email, billingDetails) => {
           `,
           attachments: [
             {
-              filename: 'ForexMasterPro.ex4',
+              filename: 'RallySignal.ex4',
               path: pdfPath // adjust the path to where your PDF is located
             }
           ]
@@ -250,7 +250,7 @@ const sendProductEmail = async (email, billingDetails) => {
                 <p><strong>FX Signal Trade Team</strong></p>
                 <div class="footer">
                     <p>This is an automated message. Please do not reply directly to this email.</p>
-                    <p>Contact us: support@forexmasterpro.com | <a href="https://yourcompany.com">www.yourcompany.com</a></p>
+                    <p>Contact us: support@rallysignal.com | <a href="https://rallysignals.com">www.rallysignals.com</a></p>
                 </div>
             </div>
         </body>
