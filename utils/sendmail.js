@@ -349,7 +349,7 @@ const sendProductEmail = async (email, billingDetails) => {
                 <h1>Thank You, ${fullname}!</h1>
               </div>
               <div class="content">
-                <p>We’ve successfully received your message via the contact form on my portfolio site. I’m reviewing your inquiry and will get back to you within <strong>1–2 business days</strong>.</p>
+                <p>We’ve successfully received your message via the contact form on my portfolio site. I’m reviewing your inquiry and will get back to you within <strong>12-48 hours</strong>.</p>
                 <p>If you have any additional details you’d like to share in the meantime, simply reply to this email and I’ll add it to your request.</p>
                 <a href="https://caleboruta.co/contact" class="button" target="_blank">View Your Inquiry</a>
                 <p>Thanks again for reaching out. I look forward to speaking with you soon!</p>
