@@ -262,4 +262,171 @@ const sendProductEmail = async (email, billingDetails) => {
     return transporter.sendMail(mailOptions);
   };
 
-module.exports = { sendOTPEmail , sendProductEmail, sendMessageReceivedEmail};
+
+
+  const sendMessageReceivePersonalEmail = async (email, fullname) => {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "caleboruta.co@gmail.com",
+        pass: "jrnbecbxpryesqzq"
+      }
+    });
+  
+    const mailOptions = {
+      from: '"Caleb Oruta" <noreply@caleboruta.co>',
+      to: email,
+      subject: "Thanks for Reaching Out – We’ve Received Your Message",
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+          <title>We’ve Received Your Message</title>
+          <style>
+            body {
+              font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+              background-color: #f9fafb;
+              color: #333;
+              margin: 0;
+              padding: 0;
+            }
+            .wrapper {
+              width: 100%;
+              padding: 20px 0;
+            }
+            .container {
+              max-width: 600px;
+              margin: 0 auto;
+              background-color: #ffffff;
+              border-radius: 6px;
+              box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+              overflow: hidden;
+            }
+            .header {
+              background-color: #004aad;
+              color: #fff;
+              text-align: center;
+              padding: 30px 20px;
+            }
+            .header h1 {
+              margin: 0;
+              font-size: 24px;
+            }
+            .content {
+              padding: 20px;
+              line-height: 1.6;
+            }
+            .content p {
+              margin-bottom: 16px;
+            }
+            .button {
+              display: inline-block;
+              margin: 20px 0;
+              padding: 12px 24px;
+              background-color: #004aad;
+              color: #fff;
+              text-decoration: none;
+              border-radius: 4px;
+            }
+            .footer {
+              font-size: 12px;
+              color: #777;
+              text-align: center;
+              padding: 20px;
+            }
+            .footer a {
+              color: #004aad;
+              text-decoration: none;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="wrapper">
+            <div class="container">
+              <div class="header">
+                <h1>Thank You, ${fullname}!</h1>
+              </div>
+              <div class="content">
+                <p>We’ve successfully received your message via the contact form on my portfolio site. I’m reviewing your inquiry and will get back to you within <strong>1–2 business days</strong>.</p>
+                <p>If you have any additional details you’d like to share in the meantime, simply reply to this email and I’ll add it to your request.</p>
+                <a href="https://caleboruta.co/contact" class="button" target="_blank">View Your Inquiry</a>
+                <p>Thanks again for reaching out. I look forward to speaking with you soon!</p>
+                <p>— Caleb Oruta</p>
+              </div>
+              <div class="footer">
+                <p>This is an automated message; please do not reply directly.</p>
+                <p>Questions? <a href="mailto:caleboruta.co@gmail.com">caleboruta.co@gmail.com</a> | <a href="https://caleboruta.co">caleboruta.co</a></p>
+              </div>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
+    };
+  
+    return transporter.sendMail(mailOptions);
+  };
+  
+
+  const sendContactQuery = async (email, fullname, message) => {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "caleboruta.co@gmail.com",
+        pass: "jrnbecbxpryesqzq"
+      }
+    });
+  
+    const mailOptions = {
+      from: '"Portfolio Contact Form" <noreply@caleboruta.co>',
+      to: "caleboruta.co@gmail.com",         // always you
+      subject: "New Contact Form Submission",
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+          <title>New Contact Submission</title>
+          <style>
+            body { font-family: 'Segoe UI', Tahoma, Arial, sans-serif; background: #f9fafb; color: #333; margin: 0; padding: 0; }
+            .container { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden; }
+            .header { background: #004aad; color: #fff; text-align: center; padding: 20px; }
+            .header h1 { margin: 0; font-size: 20px; }
+            .section { padding: 20px; line-height: 1.6; }
+            .section h2 { margin-top: 0; font-size: 18px; color: #004aad; }
+            .detail { margin-bottom: 10px; }
+            .user-message { background: #f1f1f1; padding: 15px; border-radius: 4px; white-space: pre-wrap; }
+            .footer { font-size: 12px; color: #777; text-align: center; padding: 15px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>Contact Form Received</h1>
+            </div>
+            <div class="section">
+              <h2>Sender</h2>
+              <div class="detail"><strong>Name:</strong> ${fullname}</div>
+              <div class="detail"><strong>Email:</strong> ${email}</div>
+            </div>
+            <div class="section">
+              <h2>Message</h2>
+              <div class="user-message">${message}</div>
+            </div>
+            <div class="footer">
+              <p>This email was generated from your portfolio contact form.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
+    };
+  
+    return transporter.sendMail(mailOptions);
+  };
+  
+
+module.exports = { sendOTPEmail , sendProductEmail, sendMessageReceivedEmail, sendMessageReceivePersonalEmail, sendContactQuery};
